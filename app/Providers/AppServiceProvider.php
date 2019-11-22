@@ -20,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
         Blade::component('components.table', 'Table');
         Blade::component('components.btn-go-top', 'ButtonGoTop');
         Blade::component('components.primary-form', 'PrimaryForm');
+        Blade::component('components.loading', 'Loading');
     }
     
     /**

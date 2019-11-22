@@ -1,4 +1,4 @@
 require('./bootstrap');
 require('./btn-go-top');
-require('./table.js');
-require('./primary-form.js');
+require('./table');
+require('./primary-form');

@@ -1,14 +1,18 @@
+import {hiddenLoading, showLoading} from './loading.js';
+
 let table = document.getElementById('tableContainer');
 let body  = document.getElementById('tableBody');
 let msg   = document.getElementById('noRegisters');
 
-function getInvoices() {
+export function getInvoices() {
+    showLoading();
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             if (this.responseText.length == 2) {
-                switchElement(msg, 'block');
+                switchElement(msg, 'flex');
                 switchElement(table, 'none');
+                hiddenLoading();
             } else {
                 switchElement(msg, 'none');
                 switchElement(table, 'table');
@@ -16,7 +20,7 @@ function getInvoices() {
             }
         }
     }
-    xhttp.open("GET", "/list", true);
+    xhttp.open("GET", "/invoices", true);
     xhttp.send();
 }
 
@@ -36,6 +40,7 @@ function createTable(content) {
         `;
         tr.innerHTML = td;
     });
+    hiddenLoading();
 }
 
 getInvoices();

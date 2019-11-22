@@ -10,8 +10,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/', function() {
-    return view('home');
-});
-
-Route::get('/list', 'InvoicesController@list')->name('list');
+Route::get('/', 'HomeController@index')->name('index');
+Route::get('/invoices', 'InvoicesController@list');
+Route::post('/new', 'InvoicesController@new');

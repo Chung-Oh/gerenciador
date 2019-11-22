@@ -19237,9 +19237,9 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 __webpack_require__(/*! ./btn-go-top */ "./resources/js/btn-go-top.js");
 
-__webpack_require__(/*! ./table.js */ "./resources/js/table.js");
+__webpack_require__(/*! ./table */ "./resources/js/table.js");
 
-__webpack_require__(/*! ./primary-form.js */ "./resources/js/primary-form.js");
+__webpack_require__(/*! ./primary-form */ "./resources/js/primary-form.js");
 
 /***/ }),
 
@@ -19302,24 +19302,79 @@ btnTop.addEventListener("click", function (event) {
 
 /***/ }),
 
+/***/ "./resources/js/loading.js":
+/*!*********************************!*\
+  !*** ./resources/js/loading.js ***!
+  \*********************************/
+/*! exports provided: hiddenLoading, showLoading */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hiddenLoading", function() { return hiddenLoading; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "showLoading", function() { return showLoading; });
+var loading = document.querySelector('.loading');
+function hiddenLoading() {
+  loading.style.display = "none";
+}
+function showLoading() {
+  loading.style.display = "block";
+}
+
+/***/ }),
+
 /***/ "./resources/js/primary-form.js":
 /*!**************************************!*\
   !*** ./resources/js/primary-form.js ***!
   \**************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-$('#exampleModal').on('show.bs.modal', function (event) {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _loading_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./loading.js */ "./resources/js/loading.js");
+
+$('#invoiceModal').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget); // Button that triggered the modal
 
   var recipient = button.data('whatever'); // Extract info from data-* attributes
-  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
 
   var modal = $(this);
-  modal.find('.modal-title').text('New message to ' + recipient);
-  modal.find('.modal-body input').val(recipient);
+  modal.find('.modal-title').text('Gerar um novo registro');
+  modal.find('#insert').text('Salvar');
 });
+document.getElementById('insert').addEventListener('click', function () {
+  var title = document.getElementById('title').value;
+  var desc = document.getElementById('description').value;
+  var category = document.getElementById('category_id').value;
+  create([title, desc, category]);
+});
+
+function create(obj) {
+  Object(_loading_js__WEBPACK_IMPORTED_MODULE_0__["showLoading"])();
+  var register = {
+    title: obj[0],
+    description: obj[1],
+    category_id: obj[2]
+  };
+  console.log(register);
+  var xhttp = new XMLHttpRequest();
+
+  xhttp.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      if (this.responseText.length == 2) {
+        console.log(this.responseText);
+        Object(_loading_js__WEBPACK_IMPORTED_MODULE_0__["hiddenLoading"])();
+      } else {
+        console.log(JSON.parse(this.responseText));
+        Object(_loading_js__WEBPACK_IMPORTED_MODULE_0__["hiddenLoading"])();
+      }
+    }
+  };
+
+  xhttp.open("POST", "/new", true);
+  xhttp.send();
+}
 
 /***/ }),
 
@@ -19327,21 +19382,27 @@ $('#exampleModal').on('show.bs.modal', function (event) {
 /*!*******************************!*\
   !*** ./resources/js/table.js ***!
   \*******************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! exports provided: getInvoices */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getInvoices", function() { return getInvoices; });
+/* harmony import */ var _loading_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./loading.js */ "./resources/js/loading.js");
 
 var table = document.getElementById('tableContainer');
 var body = document.getElementById('tableBody');
 var msg = document.getElementById('noRegisters');
-
 function getInvoices() {
+  Object(_loading_js__WEBPACK_IMPORTED_MODULE_0__["showLoading"])();
   var xhttp = new XMLHttpRequest();
 
   xhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       if (this.responseText.length == 2) {
-        switchElement(msg, 'block');
+        switchElement(msg, 'flex');
         switchElement(table, 'none');
+        Object(_loading_js__WEBPACK_IMPORTED_MODULE_0__["hiddenLoading"])();
       } else {
         switchElement(msg, 'none');
         switchElement(table, 'table');
@@ -19350,7 +19411,7 @@ function getInvoices() {
     }
   };
 
-  xhttp.open("GET", "/list", true);
+  xhttp.open("GET", "/invoices", true);
   xhttp.send();
 }
 
@@ -19365,6 +19426,7 @@ function createTable(content) {
     var td = "\n            <td>".concat(element.title, "</td>\n            <td>").concat(element.description, "</td>\n            <td>").concat(element.category.name, "</td>\n            <td>").concat(element.created_at, "</td>\n        ");
     tr.innerHTML = td;
   });
+  Object(_loading_js__WEBPACK_IMPORTED_MODULE_0__["hiddenLoading"])();
 }
 
 getInvoices();
